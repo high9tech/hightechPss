@@ -1,535 +1,409 @@
-const SYS_SYSCALL = 0x000;
-const SYS_EXIT = 0x001;
-const SYS_FORK = 0x002;
-const SYS_READ = 0x003;
-const SYS_WRITE = 0x004;
-const SYS_OPEN = 0x005;
-const SYS_CLOSE = 0x006;
-const SYS_WAIT4 = 0x007;
-const SYS_UNLINK = 0x00A;
-const SYS_OBS_EXECV = 0x00B;
-const SYS_CHDIR = 0x00C;
-const SYS_CHMOD = 0x00F;
-const SYS_OBSOLETE17 = 0x011;
-const SYS_GETPID = 0x014;
-const SYS_SETUID = 0x017;
-const SYS_GETUID = 0x018;
-const SYS_GETEUID = 0x019;
-const SYS_RECVMSG = 0x01B;
-const SYS_SENDMSG = 0x01C;
-const SYS_RECVFROM = 0x01D;
-const SYS_ACCEPT = 0x01E;
-const SYS_GETPEERNAME = 0x01F;
-const SYS_GETSOCKNAME = 0x020;
-const SYS_ACCESS = 0x021;
-const SYS_CHFLAGS = 0x022;
-const SYS_FCHFLAGS = 0x023;
-const SYS_SYNC = 0x024;
-const SYS_KILL = 0x025;
-const SYS_GETPPID = 0x027;
-const SYS_DUP = 0x029;
-const SYS_GETEGID = 0x02B;
-const SYS_PROFIL = 0x02C;
-const SYS_GETGID = 0x02F;
-const SYS_GETLOGIN = 0x031;
-const SYS_SETLOGIN = 0x032;
-const SYS_OBSOLETE51 = 0x033;
-const SYS_SIGALTSTACK = 0x035;
-const SYS_IOCTL = 0x036;
-const SYS_REBOOT = 0x037;
-const SYS_REVOKE = 0x038;
-const SYS_EXECVE = 0x03B;
-const SYS_MSYNC = 0x041;
-const SYS_OBS_VREAD = 0x043;
-const SYS_OBS_VWRITE = 0x044;
-const SYS_OBSOLETE72 = 0x048;
-const SYS_MUNMAP = 0x049;
-const SYS_MPROTECT = 0x04A;
-const SYS_MADVISE = 0x04B;
-const SYS_OBS_VHANGUP = 0x04C;
-const SYS_OBS_VLIMIT = 0x04D;
-const SYS_MINCORE = 0x04E;
-const SYS_GETGROUPS = 0x04F;
-const SYS_SETGROUPS = 0x050;
-const SYS_SETITIMER = 0x053;
-const SYS_GETITIMER = 0x056;
-const SYS_GETDTABLESIZE = 0x059;
-const SYS_DUP2 = 0x05A;
-const SYS_NUMBER91 = 0x05B;
-const SYS_FCNTL = 0x05C;
-const SYS_SELECT = 0x05D;
-const SYS_NUMBER94 = 0x05E;
-const SYS_FSYNC = 0x05F;
-const SYS_SETPRIORITY = 0x060;
-const SYS_SOCKET = 0x061;
-const SYS_CONNECT = 0x062;
-const SYS_NETCONTROL = 0x063;
-const SYS_GETPRIORITY = 0x064;
-const SYS_NETABORT = 0x065;
-const SYS_NETGETSOCKINFO = 0x066;
-const SYS_BIND = 0x068;
-const SYS_SETSOCKOPT = 0x069;
-const SYS_LISTEN = 0x06A;
-const SYS_OBS_VTIMES = 0x06B;
-const SYS_SOCKETEX = 0x071;
-const SYS_SOCKETCLOSE = 0x072;
-const SYS_OBS_VTRACE = 0x073;
-const SYS_GETTIMEOFDAY = 0x074;
-const SYS_GETRUSAGE = 0x075;
-const SYS_GETSOCKOPT = 0x076;
-const SYS_NUMBER119 = 0x077;
-const SYS_READV = 0x078;
-const SYS_WRITEV = 0x079;
-const SYS_SETTIMEOFDAY = 0x07A;
-const SYS_FCHMOD = 0x07C;
-const SYS_NETGETIFLIST = 0x07D;
-const SYS_SETREUID = 0x07E;
-const SYS_SETREGID = 0x07F;
-const SYS_RENAME = 0x080;
-const SYS_FLOCK = 0x083;
-const SYS_SENDTO = 0x085;
-const SYS_SHUTDOWN = 0x086;
-const SYS_SOCKETPAIR = 0x087;
-const SYS_MKDIR = 0x088;
-const SYS_RMDIR = 0x089;
-const SYS_UTIMES = 0x08A;
-const SYS_ADJTIME = 0x08C;
-const SYS_KQUEUEEX = 0x08D;
-const SYS_SETSID = 0x093;
-const SYS_OBSOLETE148 = 0x094;
-const SYS_NUMBER151 = 0x097;
-const SYS_NUMBER152 = 0x098;
-const SYS_NUMBER153 = 0x099;
-const SYS_NUMBER159 = 0x09F;
-const SYS_OBSOLETE160 = 0x0A0;
-const SYS_OBSOLETE161 = 0x0A1;
-const SYS_SYSARCH = 0x0A5;
-const SYS_NUMBER167 = 0x0A7;
-const SYS_NUMBER168 = 0x0A8;
-const SYS_NUMBER172 = 0x0AC;
-const SYS_OBSOLETE173 = 0x0AD;
-const SYS_OBSOLETE174 = 0x0AE;
-const SYS_OBSOLETE175 = 0x0AF;
-const SYS_OBSOLETE176 = 0x0B0;
-const SYS_NUMBER177 = 0x0B1;
-const SYS_NUMBER178 = 0x0B2;
-const SYS_NUMBER179 = 0x0B3;
-const SYS_NUMBER180 = 0x0B4;
-const SYS_SETEGID = 0x0B6;
-const SYS_SETEUID = 0x0B7;
-const SYS_NUMBER184 = 0x0B8;
-const SYS_NUMBER185 = 0x0B9;
-const SYS_NUMBER186 = 0x0BA;
-const SYS_NUMBER187 = 0x0BB;
-const SYS_STAT = 0x0BC;
-const SYS_FSTAT = 0x0BD;
-const SYS_LSTAT = 0x0BE;
-const SYS_PATHCONF = 0x0BF;
-const SYS_FPATHCONF = 0x0C0;
-const SYS_NUMBER193 = 0x0C1;
-const SYS_GETRLIMIT = 0x0C2;
-const SYS_SETRLIMIT = 0x0C3;
-const SYS_GETDIRENTRIES = 0x0C4;
-const SYS_OBSOLETE197 = 0x0C5;
-const SYS_OBSOLETE199 = 0x0C7;
-const SYS_OBSOLETE200 = 0x0C8;
-const SYS_OBSOLETE201 = 0x0C9;
-const SYS___SYSCTL = 0x0CA;
-const SYS_MLOCK = 0x0CB;
-const SYS_MUNLOCK = 0x0CC;
-const SYS_OBSOLETE205 = 0x0CD;
-const SYS_FUTIMES = 0x0CE;
-const SYS_NUMBER208 = 0x0D0;
-const SYS_POLL = 0x0D1;
-const SYS_NUMBER223 = 0x0DF;
-const SYS_CLOCK_GETTIME = 0x0E8;
-const SYS_CLOCK_SETTIME = 0x0E9;
-const SYS_CLOCK_GETRES = 0x0EA;
-const SYS_KTIMER_CREATE = 0x0EB;
-const SYS_KTIMER_DELETE = 0x0EC;
-const SYS_KTIMER_SETTIME = 0x0ED;
-const SYS_KTIMER_GETTIME = 0x0EE;
-const SYS_KTIMER_GETOVERRUN = 0x0EF;
-const SYS_NANOSLEEP = 0x0F0;
-const SYS_NUMBER241 = 0x0F1;
-const SYS_NUMBER242 = 0x0F2;
-const SYS_NUMBER243 = 0x0F3;
-const SYS_NUMBER244 = 0x0F4;
-const SYS_NUMBER245 = 0x0F5;
-const SYS_NUMBER246 = 0x0F6;
-const SYS_NUMBER247 = 0x0F7;
-const SYS_OBSOLETE248 = 0x0F8;
-const SYS_NUMBER249 = 0x0F9;
-const SYS_RFORK = 0x0FB;
-const SYS_OBSOLETE252 = 0x0FC;
-const SYS_ISSETUGID = 0x0FD;
-const SYS_OBSOLETE257 = 0x101;
-const SYS_NUMBER258 = 0x102;
-const SYS_NUMBER259 = 0x103;
-const SYS_NUMBER260 = 0x104;
-const SYS_NUMBER261 = 0x105;
-const SYS_NUMBER262 = 0x106;
-const SYS_NUMBER263 = 0x107;
-const SYS_NUMBER264 = 0x108;
-const SYS_NUMBER265 = 0x109;
-const SYS_NUMBER266 = 0x10A;
-const SYS_NUMBER267 = 0x10B;
-const SYS_NUMBER268 = 0x10C;
-const SYS_NUMBER269 = 0x10D;
-const SYS_NUMBER270 = 0x10E;
-const SYS_NUMBER271 = 0x10F;
-const SYS_GETDENTS = 0x110;
-const SYS_NUMBER273 = 0x111;
-const SYS_OBSOLETE278 = 0x116;
-const SYS_OBSOLETE279 = 0x117;
-const SYS_OBSOLETE280 = 0x118;
-const SYS_NUMBER281 = 0x119;
-const SYS_NUMBER282 = 0x11A;
-const SYS_NUMBER283 = 0x11B;
-const SYS_NUMBER284 = 0x11C;
-const SYS_NUMBER285 = 0x11D;
-const SYS_NUMBER286 = 0x11E;
-const SYS_NUMBER287 = 0x11F;
-const SYS_NUMBER288 = 0x120;
-const SYS_PREADV = 0x121;
-const SYS_PWRITEV = 0x122;
-const SYS_NUMBER291 = 0x123;
-const SYS_NUMBER292 = 0x124;
-const SYS_NUMBER293 = 0x125;
-const SYS_NUMBER294 = 0x126;
-const SYS_NUMBER295 = 0x127;
-const SYS_NUMBER296 = 0x128;
-const SYS_OBSOLETE298 = 0x12A;
-const SYS_OBSOLETE299 = 0x12B;
-const SYS_OBSOLETE300 = 0x12C;
-const SYS_OBSOLETE301 = 0x12D;
-const SYS_OBSOLETE302 = 0x12E;
-const SYS_OBSOLETE303 = 0x12F;
-const SYS_GETSID = 0x136;
-const SYS_OBS_SIGNANOSLEEP = 0x139;
-const SYS_AIO_SUSPEND = 0x13B;
-const SYS_OBSOLETE318 = 0x13E;
-const SYS_OBSOLETE319 = 0x13F;
-const SYS_OBSOLETE320 = 0x140;
-const SYS_OBS_THR_SLEEP = 0x142;
-const SYS_OBS_THR_WAKEUP = 0x143;
-const SYS_MLOCKALL = 0x144;
-const SYS_MUNLOCKALL = 0x145;
-const SYS_SCHED_SETPARAM = 0x147;
-const SYS_SCHED_GETPARAM = 0x148;
-const SYS_SCHED_SETSCHEDULER = 0x149;
-const SYS_SCHED_GETSCHEDULER = 0x14A;
-const SYS_SCHED_YIELD = 0x14B;
-const SYS_SCHED_GET_PRIORITY_MAX = 0x14C;
-const SYS_SCHED_GET_PRIORITY_MIN = 0x14D;
-const SYS_SCHED_RR_GET_INTERVAL = 0x14E;
-const SYS_OBSOLETE338 = 0x152;
-const SYS_SIGPROCMASK = 0x154;
-const SYS_SIGSUSPEND = 0x155;
-const SYS_SIGPENDING = 0x157;
-const SYS_SIGTIMEDWAIT = 0x159;
-const SYS_SIGWAITINFO = 0x15A;
-const SYS_OBSOLETE347 = 0x15B;
-const SYS_OBSOLETE348 = 0x15C;
-const SYS_OBSOLETE349 = 0x15D;
-const SYS_OBSOLETE350 = 0x15E;
-const SYS_OBSOLETE351 = 0x15F;
-const SYS_OBSOLETE352 = 0x160;
-const SYS_OBSOLETE353 = 0x161;
-const SYS_OBSOLETE354 = 0x162;
-const SYS_OBSOLETE355 = 0x163;
-const SYS_OBSOLETE356 = 0x164;
-const SYS_OBSOLETE357 = 0x165;
-const SYS_OBSOLETE358 = 0x166;
-const SYS_KQUEUE = 0x16A;
-const SYS_KEVENT = 0x16B;
-const SYS_NUMBER364 = 0x16C;
-const SYS_NUMBER365 = 0x16D;
-const SYS_NUMBER366 = 0x16E;
-const SYS_NUMBER367 = 0x16F;
-const SYS_NUMBER368 = 0x170;
-const SYS_NUMBER369 = 0x171;
-const SYS_NUMBER370 = 0x172;
-const SYS_OBSOLETE371 = 0x173;
-const SYS_OBSOLETE372 = 0x174;
-const SYS_OBSOLETE373 = 0x175;
-const SYS_NUMBER375 = 0x177;
-const SYS_OBSOLETE376 = 0x178;
-const SYS_MTYPEPROTECT = 0x17B;
-const SYS_NUMBER380 = 0x17C;
-const SYS_NUMBER381 = 0x17D;
-const SYS_NUMBER382 = 0x17E;
-const SYS_NUMBER383 = 0x17F;
-const SYS_UUIDGEN = 0x188;
-const SYS_SENDFILE = 0x189;
-const SYS_FSTATFS = 0x18D;
-const SYS_OBSOLETE398 = 0x18E;
-const SYS_NUMBER399 = 0x18F;
-const SYS_KSEM_CLOSE = 0x190;
-const SYS_KSEM_POST = 0x191;
-const SYS_KSEM_WAIT = 0x192;
-const SYS_KSEM_TRYWAIT = 0x193;
-const SYS_KSEM_INIT = 0x194;
-const SYS_KSEM_OPEN = 0x195;
-const SYS_KSEM_UNLINK = 0x196;
-const SYS_KSEM_GETVALUE = 0x197;
-const SYS_KSEM_DESTROY = 0x198;
-const SYS_OBSOLETE412 = 0x19C;
-const SYS_OBSOLETE413 = 0x19D;
-const SYS_OBSOLETE414 = 0x19E;
-const SYS_SIGACTION = 0x1A0;
-const SYS_SIGRETURN = 0x1A1;
-const SYS_NUMBER418 = 0x1A2;
-const SYS_NUMBER419 = 0x1A3;
-const SYS_NUMBER420 = 0x1A4;
-const SYS_GETCONTEXT = 0x1A5;
-const SYS_SETCONTEXT = 0x1A6;
-const SYS_SWAPCONTEXT = 0x1A7;
-const SYS_OBSOLETE424 = 0x1A8;
-const SYS_OBSOLETE425 = 0x1A9;
-const SYS_OBSOLETE426 = 0x1AA;
-const SYS_OBSOLETE427 = 0x1AB;
-const SYS_OBSOLETE428 = 0x1AC;
-const SYS_SIGWAIT = 0x1AD;
-const SYS_THR_CREATE = 0x1AE;
-const SYS_THR_EXIT = 0x1AF;
-const SYS_THR_SELF = 0x1B0;
-const SYS_THR_KILL = 0x1B1;
-const SYS_NUMBER434 = 0x1B2;
-const SYS_NUMBER435 = 0x1B3;
-const SYS_OBSOLETE436 = 0x1B4;
-const SYS_OBSOLETE437 = 0x1B5;
-const SYS_OBSOLETE438 = 0x1B6;
-const SYS_OBSOLETE439 = 0x1B7;
-const SYS_NUMBER440 = 0x1B8;
-const SYS_KSEM_TIMEDWAIT = 0x1B9;
-const SYS_THR_SUSPEND = 0x1BA;
-const SYS_THR_WAKE = 0x1BB;
-const SYS_KLDUNLOADF = 0x1BC;
-const SYS_OBSOLETE445 = 0x1BD;
-const SYS_OBSOLETE446 = 0x1BE;
-const SYS_OBSOLETE447 = 0x1BF;
-const SYS_OBSOLETE448 = 0x1C0;
-const SYS_OBSOLETE449 = 0x1C1;
-const SYS_OBSOLETE450 = 0x1C2;
-const SYS_OBSOLETE451 = 0x1C3;
-const SYS_OBSOLETE452 = 0x1C4;
-const SYS_OBSOLETE453 = 0x1C5;
-const SYS__UMTX_OP = 0x1C6;
-const SYS_THR_NEW = 0x1C7;
-const SYS_SIGQUEUE = 0x1C8;
-const SYS_OBSOLETE463 = 0x1CF;
-const SYS_THR_SET_NAME = 0x1D0;
-const SYS_RTPRIO_THREAD = 0x1D2;
-const SYS_NUMBER467 = 0x1D3;
-const SYS_NUMBER468 = 0x1D4;
-const SYS_NUMBER469 = 0x1D5;
-const SYS_NUMBER470 = 0x1D6;
-const SYS_OBSOLETE471 = 0x1D7;
-const SYS_OBSOLETE472 = 0x1D8;
-const SYS_OBSOLETE473 = 0x1D9;
-const SYS_OBSOLETE474 = 0x1DA;
-const SYS_PREAD = 0x1DB;
-const SYS_PWRITE = 0x1DC;
-const SYS_MMAP = 0x1DD;
-const SYS_LSEEK = 0x1DE;
-const SYS_TRUNCATE = 0x1DF;
-const SYS_FTRUNCATE = 0x1E0;
-const SYS_THR_KILL2 = 0x1E1;
-const SYS_SHM_OPEN = 0x1E2;
-const SYS_SHM_UNLINK = 0x1E3;
-const SYS_CPUSET_GETID = 0x1E6;
-const SYS_PS4_CPUSET_GETAFFINITY = 0x1E7;
-const SYS_PS4_CPUSET_SETAFFINITY = 0x1E8;
-const SYS_OBSOLETE489 = 0x1E9;
-const SYS_OBSOLETE492 = 0x1EC;
-const SYS_OPENAT = 0x1F3;
-const SYS_OBSOLETE500 = 0x1F4;
-const SYS_OBSOLETE504 = 0x1F8;
-const SYS_OBSOLETE506 = 0x1FA;
-const SYS_OBSOLETE507 = 0x1FB;
-const SYS_OBSOLETE508 = 0x1FC;
-const SYS_OBSOLETE509 = 0x1FD;
-const SYS_OBSOLETE513 = 0x201;
-const SYS_OBS_CAP_NEW = 0x202;
-const SYS___CAP_RIGHTS_GET = 0x203;
-const SYS_NUMBER521 = 0x209;
-const SYS_PSELECT = 0x20A;
-const SYS_OBSOLETE523 = 0x20B;
-const SYS_OBSOLETE524 = 0x20C;
-const SYS_OBSOLETE530 = 0x212;
-const SYS_NUMBER531 = 0x213;
-const SYS_REGMGR_CALL = 0x214;
-const SYS_JITSHM_CREATE = 0x215;
-const SYS_JITSHM_ALIAS = 0x216;
-const SYS_DL_GET_LIST = 0x217;
-const SYS_DL_GET_INFO = 0x218;
-const SYS_OBSOLETE537 = 0x219;
-const SYS_EVF_CREATE = 0x21A;
-const SYS_EVF_DELETE = 0x21B;
-const SYS_EVF_OPEN = 0x21C;
-const SYS_EVF_CLOSE = 0x21D;
-const SYS_EVF_WAIT = 0x21E;
-const SYS_EVF_TRYWAIT = 0x21F;
-const SYS_EVF_SET = 0x220;
-const SYS_EVF_CLEAR = 0x221;
-const SYS_EVF_CANCEL = 0x222;
-const SYS_QUERY_MEMORY_PROTECTION = 0x223;
-const SYS_BATCH_MAP = 0x224;
-const SYS_OSEM_CREATE = 0x225;
-const SYS_OSEM_DELETE = 0x226;
-const SYS_OSEM_OPEN = 0x227;
-const SYS_OSEM_CLOSE = 0x228;
-const SYS_OSEM_WAIT = 0x229;
-const SYS_OSEM_TRYWAIT = 0x22A;
-const SYS_OSEM_POST = 0x22B;
-const SYS_OSEM_CANCEL = 0x22C;
-const SYS_NAMEDOBJ_CREATE = 0x22D;
-const SYS_NAMEDOBJ_DELETE = 0x22E;
-const SYS_SET_VM_CONTAINER = 0x22F;
-const SYS_DEBUG_INIT = 0x230;
-const SYS_OPMC_ENABLE = 0x233;
-const SYS_OPMC_DISABLE = 0x234;
-const SYS_OPMC_SET_CTL = 0x235;
-const SYS_OPMC_SET_CTR = 0x236;
-const SYS_OPMC_GET_CTR = 0x237;
-const SYS_VIRTUAL_QUERY = 0x23C;
-const SYS_OBS_SBLOCK_CREATE = 0x23E;
-const SYS_OBS_SBLOCK_DELETE = 0x23F;
-const SYS_OBS_SBLOCK_ENTER = 0x240;
-const SYS_OBS_SBLOCK_EXIT = 0x241;
-const SYS_OBS_SBLOCK_XENTER = 0x242;
-const SYS_OBS_SBLOCK_XEXIT = 0x243;
-const SYS_OBS_EPORT_CREATE = 0x244;
-const SYS_OBS_EPORT_DELETE = 0x245;
-const SYS_OBS_EPORT_TRIGGER = 0x246;
-const SYS_OBS_EPORT_OPEN = 0x247;
-const SYS_OBS_EPORT_CLOSE = 0x248;
-const SYS_IS_IN_SANDBOX = 0x249;
-const SYS_DMEM_CONTAINER = 0x24A;
-const SYS_GET_AUTHINFO = 0x24B;
-const SYS_MNAME = 0x24C;
-const SYS_DYNLIB_DLSYM = 0x24F;
-const SYS_DYNLIB_GET_LIST = 0x250;
-const SYS_DYNLIB_GET_INFO = 0x251;
-const SYS_DYNLIB_LOAD_PRX = 0x252;
-const SYS_DYNLIB_UNLOAD_PRX = 0x253;
-const SYS_DYNLIB_DO_COPY_RELOCATIONS = 0x254;
-const SYS_DYNLIB_GET_PROC_PARAM = 0x256;
-const SYS_DYNLIB_PROCESS_NEEDED_AND_RELOCATE = 0x257;
-const SYS_SANDBOX_PATH = 0x258;
-const SYS_MDBG_SERVICE = 0x259;
-const SYS_RANDOMIZED_PATH = 0x25A;
-const SYS_RDUP = 0x25B;
-const SYS_DL_GET_METADATA = 0x25C;
-const SYS_WORKAROUND8849 = 0x25D;
-const SYS_IS_DEVELOPMENT_MODE = 0x25E;
-const SYS_GET_SELF_AUTH_INFO = 0x25F;
-const SYS_DYNLIB_GET_INFO_EX = 0x260;
-const SYS_BUDGET_GET_PTYPE = 0x262;
-const SYS_GET_PAGING_STATS_OF_ALL_THREADS = 0x263;
-const SYS_GET_PROC_TYPE_INFO = 0x264;
-const SYS_GET_RESIDENT_COUNT = 0x265;
-const SYS_GET_RESIDENT_FMEM_COUNT = 0x267;
-const SYS_THR_GET_NAME = 0x268;
-const SYS_SET_GPO = 0x269;
-const SYS_GET_PAGING_STATS_OF_ALL_OBJECTS = 0x26A;
-const SYS_TEST_DEBUG_RWMEM = 0x26B;
-const SYS_FREE_STACK = 0x26C;
-const SYS_IPMIMGR_CALL = 0x26E;
-const SYS_GET_GPO = 0x26F;
-const SYS_GET_VM_MAP_TIMESTAMP = 0x270;
-const SYS_OPMC_SET_HW = 0x271;
-const SYS_OPMC_GET_HW = 0x272;
-const SYS_GET_CPU_USAGE_ALL = 0x273;
-const SYS_MMAP_DMEM = 0x274;
-const SYS_PHYSHM_OPEN = 0x275;
-const SYS_PHYSHM_UNLINK = 0x276;
-const SYS_THR_SUSPEND_UCONTEXT = 0x278;
-const SYS_THR_RESUME_UCONTEXT = 0x279;
-const SYS_THR_GET_UCONTEXT = 0x27A;
-const SYS_THR_SET_UCONTEXT = 0x27B;
-const SYS_SET_TIMEZONE_INFO = 0x27C;
-const SYS_SET_PHYS_FMEM_LIMIT = 0x27D;
-const SYS_UTC_TO_LOCALTIME = 0x27E;
-const SYS_LOCALTIME_TO_UTC = 0x27F;
-const SYS_SET_UEVT = 0x280;
-const SYS_GET_CPU_USAGE_PROC = 0x281;
-const SYS_GET_MAP_STATISTICS = 0x282;
-const SYS_SET_CHICKEN_SWITCHES = 0x283;
-const SYS_NUMBER644 = 0x284;
-const SYS_NUMBER645 = 0x285;
-const SYS_GET_KERNEL_MEM_STATISTICS = 0x286;
-const SYS_GET_SDK_COMPILED_VERSION = 0x287;
-const SYS_APP_STATE_CHANGE = 0x288;
-const SYS_DYNLIB_GET_OBJ_MEMBER = 0x289;
-const SYS_PROCESS_TERMINATE = 0x28C;
-const SYS_BLOCKPOOL_OPEN = 0x28D;
-const SYS_BLOCKPOOL_MAP = 0x28E;
-const SYS_BLOCKPOOL_UNMAP = 0x28F;
-const SYS_DYNLIB_GET_INFO_FOR_LIBDBG = 0x290;
-const SYS_BLOCKPOOL_BATCH = 0x291;
-const SYS_FDATASYNC = 0x292;
-const SYS_DYNLIB_GET_LIST2 = 0x293;
-const SYS_DYNLIB_GET_INFO2 = 0x294;
-const SYS_AIO_SUBMIT = 0x295;
-const SYS_AIO_MULTI_DELETE = 0x296;
-const SYS_AIO_MULTI_WAIT = 0x297;
-const SYS_AIO_MULTI_POLL = 0x298;
-const SYS_AIO_GET_DATA = 0x299;
-const SYS_AIO_MULTI_CANCEL = 0x29A;
-const SYS_GET_BIO_USAGE_ALL = 0x29B;
-const SYS_AIO_CREATE = 0x29C;
-const SYS_AIO_SUBMIT_CMD = 0x29D;
-const SYS_AIO_INIT = 0x29E;
-const SYS_GET_PAGE_TABLE_STATS = 0x29F;
-const SYS_DYNLIB_GET_LIST_FOR_LIBDBG = 0x2A0;
-const SYS_BLOCKPOOL_MOVE = 0x2A1;
-const SYS_VIRTUAL_QUERY_ALL = 0x2A2;
-const SYS_RESERVE_2MB_PAGE = 0x2A3;
-const SYS_CPUMODE_YIELD = 0x2A4;
-const SYS_WAIT6 = 0x2A5;
-const SYS_CAP_RIGHTS_LIMIT = 0x2A6;
-const SYS_CAP_IOCTLS_LIMIT = 0x2A7;
-const SYS_CAP_IOCTLS_GET = 0x2A8;
-const SYS_CAP_FCNTLS_LIMIT = 0x2A9;
-const SYS_CAP_FCNTLS_GET = 0x2AA;
-const SYS_BINDAT = 0x2AB;
-const SYS_CONNECTAT = 0x2AC;
-const SYS_CHFLAGSAT = 0x2AD;
-const SYS_ACCEPT4 = 0x2AE;
-const SYS_PIPE2 = 0x2AF;
-const SYS_AIO_MLOCK = 0x2B0;
-const SYS_PROCCTL = 0x2B1;
-const SYS_PPOLL = 0x2B2;
-const SYS_FUTIMENS = 0x2B3;
-const SYS_UTIMENSAT = 0x2B4;
-const SYS_NUMA_GETAFFINITY = 0x2B5;
-const SYS_NUMA_SETAFFINITY = 0x2B6;
-const SYS_NUMBER695 = 0x2B7;
-const SYS_NUMBER696 = 0x2B8;
-const SYS_NUMBER697 = 0x2B9;
-const SYS_NUMBER698 = 0x2BA;
-const SYS_NUMBER699 = 0x2BB;
-const SYS_APR_SUBMIT = 0x2BC;
-const SYS_APR_RESOLVE = 0x2BD;
-const SYS_APR_STAT = 0x2BE;
-const SYS_APR_WAIT = 0x2BF;
-const SYS_APR_CTRL = 0x2C0;
-const SYS_GET_PHYS_PAGE_SIZE = 0x2C1;
-const SYS_BEGIN_APP_MOUNT = 0x2C2;
-const SYS_END_APP_MOUNT = 0x2C3;
-const SYS_FSC2H_CTRL = 0x2C4;
-const SYS_STREAMWRITE = 0x2C5;
-const SYS_APP_SAVE = 0x2C6;
-const SYS_APP_RESTORE = 0x2C7;
-const SYS_SAVED_APP_DELETE = 0x2C8;
-const SYS_GET_PPR_SDK_COMPILED_VERSION = 0x2C9;
-const SYS_NOTIFY_APP_EVENT = 0x2CA;
-const SYS_IOREQ = 0x2CB;
-const SYS_OPENINTR = 0x2CC;
-const SYS_DL_GET_INFO_2 = 0x2CD;
-const SYS_ACINFO_ADD = 0x2CE;
-const SYS_ACINFO_DELETE = 0x2CF;
-const SYS_ACINFO_GET_ALL_FOR_COREDUMP = 0x2D0;
-const SYS_AMPR_CTRL_DEBUG = 0x2D1;
+window.syscalls = {};
+
+/* These are the offsets in libkernel for system call wrappers */
+window.syscallMap =
+{
+  '3.55':
+  {
+    3: 0xAB20, // sys_read
+    4: 0xAB40, // sys_write
+    5: 0xAB60, // sys_open
+    6: 0xAB80, // sys_close
+    20: 0xACE0, // sys_getpid
+    23: 0xAD40, // sys_setuid
+    24: 0xAD60, // sys_getuid
+    50: 0xDA10, // sys_setlogin
+    54: 0xB0A0, // sys_ioctl
+    73: 0xB1E0, // sys_munmap
+    74: 0xB200, // sys_mprotect
+    97: 0xB3E0, // sys_socket
+    98: 0xB400, // sys_connect
+    203: 0xB900, // sys_mlock
+    324: 0xB920, // sys_mlockall
+    362: 0xBF40, // sys_kqueue
+    363: 0xBF60, // sys_kevent
+    477: 0xB1C0, // sys_mmap
+    557: 0xCB80, // Kernel Exploit Free P1 "sys_namedobj_create"
+    558: 0xCBA0, // Kernel Exploit Free P3 "sys_namedobj_delete"
+	591: 0xCF80, // sys_dynlib_dlsym
+    594: 0xCFE0, // sys_dynlib_load_prx
+    601: 0xD0C0, // Kernel Exploit Free P2 "sys_mdbg_service"
+    632: 0xD4A0, // Kernel Exploit Leak P1 "sys_thr_suspend_ucontext"
+    633: 0xD4C0, // Kernel Exploit Leak P3 "sys_thr_resume_ucontext"
+    634: 0xD4E0, // Kernel Exploit Leak P2 "sys_thr_get_ucontext"
+  },
+  '4.05':
+  {
+    3: 0x25F0, // sys_read
+    4: 0x2730, // sys_write
+    5: 0x2570, // sys_open
+    6: 0x24D0, // sys_close
+    20: 0x06F0, // sys_getpid
+    23: 0x0710, // sys_setuid
+    24: 0x0730, // sys_getuid
+    50: 0x0640, // sys_setlogin
+    54: 0x0970, // sys_ioctl
+    73: 0x09F0, // sys_munmap
+    74: 0x0A10, // sys_mprotect
+    97: 0x0B70, // sys_socket
+    98: 0x24F0, // sys_connect
+    203: 0x1030, // sys_mlock
+    324: 0x1230, // sys_mlockall
+    362: 0x1390, // sys_kqueue
+    363: 0x13B0, // sys_kevent
+    477: 0x27B0, // sys_mmap
+    557: 0x1AF0, // Kernel Exploit Free P1 "sys_namedobj_create"
+    558: 0x1B10, // Kernel Exploit Free P3 "sys_namedobj_delete"
+	591: 0x1D50, // sys_dynlib_dlsym
+    594: 0x1DB0, // sys_dynlib_load_prx
+    601: 0x1E70, // Kernel Exploit Free P2 "sys_mdbg_service"
+    632: 0x21D0, // Kernel Exploit Leak P1 "sys_thr_suspend_ucontext"
+    633: 0x21F0, // Kernel Exploit Leak P3 "sys_thr_resume_ucontext"
+    634: 0x2210, // Kernel Exploit Leak P2 "sys_thr_get_ucontext"
+  }
+}
+
+/* A long ass map of system call names -> number, you shouldn't need to touch this */
+window.syscallnames =
+{
+  "sys_exit": 1,
+  "sys_fork": 2,
+  "sys_read": 3,
+  "sys_write": 4,
+  "sys_open": 5,
+  "sys_close": 6,
+  "sys_wait4": 7,
+  "sys_creat": 8,
+  "sys_link": 9,
+  "sys_unlink": 10,
+  "sys_execv": 11,
+  "sys_chdir": 12,
+  "sys_fchdir": 13,
+  "sys_mknod": 14,
+  "sys_chmod": 15,
+  "sys_getpid": 20,
+  "sys_setuid": 23,
+  "sys_getuid": 24,
+  "sys_geteuid": 25,
+  "sys_recvmsg": 27,
+  "sys_sendmsg": 28,
+  "sys_recvfrom": 29,
+  "sys_accept": 30,
+  "sys_getpeername": 31,
+  "sys_getsockname": 32,
+  "sys_access": 33,
+  "sys_chflags": 34,
+  "sys_fchflags": 35,
+  "sys_sync": 36,
+  "sys_kill": 37,
+  "sys_stat": 38,
+  "sys_getppid": 39,
+  "sys_lstat": 40,
+  "sys_dup": 41,
+  "sys_pipe": 42,
+  "sys_getegid": 43,
+  "sys_profil": 44,
+  "sys_getgid": 47,
+  "sys_getlogin": 49,
+  "sys_setlogin": 50,
+  "sys_sigaltstack": 53,
+  "sys_ioctl": 54,
+  "sys_reboot": 55,
+  "sys_revoke": 56,
+  "sys_execve": 59,
+  "sys_msync": 65,
+  "sys_munmap": 73,
+  "sys_mprotect": 74,
+  "sys_madvise": 75,
+  "sys_mincore": 78,
+  "sys_getgroups": 79,
+  "sys_setgroups": 80,
+  "sys_setitimer": 83,
+  "sys_getitimer": 86,
+  "sys_getdtablesize": 89,
+  "sys_dup2": 90,
+  "sys_fcntl": 92,
+  "sys_select": 93,
+  "sys_fsync": 95,
+  "sys_setpriority": 96,
+  "sys_socket": 97,
+  "sys_connect": 98,
+  /*"sys_getpriority": 100,
+  "sys_send": 101,
+  "sys_recv": 102,
+  "sys_bind": 104,
+  "sys_setsockopt": 105,
+  "sys_listen": 106,
+  "sys_recvmsg": 113,
+  "sys_sendmsg": 114,
+  "sys_gettimeofday": 116,
+  "sys_getrusage": 117,
+  "sys_getsockopt": 118,
+  "sys_readv": 120,
+  "sys_writev": 121,
+  "sys_settimeofday": 122,
+  "sys_fchmod": 124,
+  "sys_recvfrom": 125,
+  "sys_setreuid": 126,
+  "sys_setregid": 127,
+  "sys_rename": 128,
+  "sys_flock": 131,
+  "sys_sendto": 133,
+  "sys_shutdown": 134,
+  "sys_socketpair": 135,
+  "sys_mkdir": 136,
+  "sys_rmdir": 137,
+  "sys_utimes": 138,
+  "sys_adjtime": 140,
+  "sys_getpeername": 141,
+  "sys_setsid": 147,
+  "sys_sysarch": 165,
+  "sys_setegid": 182,
+  "sys_seteuid": 183,
+  "sys_fstat": 189,
+  "sys_lstat": 190,
+  "sys_pathconf": 191,
+  "sys_fpathconf": 192,
+  "sys_getrlimit": 194,
+  "sys_setrlimit": 195,
+  "sys_getdirentries": 196,*/
+  "sys___sysctl": 202,
+  "sys_mlock": 203,
+  "sys_munlock": 204,
+  "sys_futimes": 206,
+  "sys_poll": 209,
+  "sys_clock_gettime": 232,
+  "sys_clock_settime": 233,
+  "sys_clock_getres": 234,
+  "sys_ktimer_create": 235,
+  "sys_ktimer_delete": 236,
+  "sys_ktimer_settime": 237,
+  "sys_ktimer_gettime": 238,
+  "sys_ktimer_getoverrun": 239,
+  "sys_nanosleep": 240,
+  "sys_rfork": 251,
+  "sys_issetugid": 253,
+  "sys_getdents": 272,
+  "sys_preadv": 289,
+  "sys_pwritev": 290,
+  "sys_getsid": 310,
+  "sys_aio_suspend": 315,
+  "sys_mlockall": 324,
+  "sys_munlockall": 325,
+  "sys_sched_setparam": 327,
+  "sys_sched_getparam": 328,
+  "sys_sched_setscheduler": 329,
+  "sys_sched_getscheduler": 330,
+  "sys_sched_yield": 331,
+  "sys_sched_get_priority_max": 332,
+  "sys_sched_get_priority_min": 333,
+  "sys_sched_rr_get_interval": 334,
+  "sys_utrace": 335,
+  "sys_sigprocmask": 340,
+  "sys_sigprocmask": 340,
+  "sys_sigsuspend": 341,
+  "sys_sigpending": 343,
+  "sys_sigtimedwait": 345,
+  "sys_sigwaitinfo": 346,
+  "sys_kqueue": 362,
+  "sys_kevent": 363,
+  "sys_uuidgen": 392,
+  "sys_sendfile": 393,
+  "sys_fstatfs": 397,
+  "sys_ksem_close": 400,
+  "sys_ksem_post": 401,
+  "sys_ksem_wait": 402,
+  "sys_ksem_trywait": 403,
+  "sys_ksem_init": 404,
+  "sys_ksem_open": 405,
+  "sys_ksem_unlink": 406,
+  "sys_ksem_getvalue": 407,
+  "sys_ksem_destroy": 408,
+  "sys_sigaction": 416,
+  "sys_sigreturn": 417,
+  "sys_getcontext": 421,
+  "sys_setcontext": 422,
+  "sys_swapcontext": 423,
+  "sys_sigwait": 429,
+  "sys_thr_create": 430,
+  "sys_thr_exit": 431,
+  "sys_thr_self": 432,
+  "sys_thr_kill": 433,
+  "sys_ksem_timedwait": 441,
+  "sys_thr_suspend": 442,
+  "sys_thr_wake": 443,
+  "sys_kldunloadf": 444,
+  "sys__umtx_op": 454,
+  "sys_thr_new": 455,
+  "sys_sigqueue": 456,
+  "sys_thr_set_name": 464,
+  "sys_rtprio_thread": 466,
+  "sys_pread": 475,
+  "sys_pwrite": 476,
+  "sys_mmap": 477,
+  "sys_lseek": 478,
+  "sys_truncate": 479,
+  "sys_ftruncate": 480,
+  "sys_thr_kill2": 481,
+  "sys_shm_open": 482,
+  "sys_shm_unlink": 483,
+  "sys_cpuset_getid": 486,
+  "sys_cpuset_getaffinity": 487,
+  "sys_cpuset_setaffinity": 488,
+  "sys_openat": 499,
+  "sys_pselect": 522,
+
+  "sys_regmgr_call": 532,
+  "sys_jitshm_create": 533,
+  "sys_jitshm_alias": 534,
+  "sys_dl_get_list": 535,
+  "sys_dl_get_info": 536,
+  "sys_dl_notify_event": 537,
+  "sys_evf_create": 538,
+  "sys_evf_delete": 539,
+  "sys_evf_open": 540,
+  "sys_evf_close": 541,
+  "sys_evf_wait": 542,
+  "sys_evf_trywait": 543,
+  "sys_evf_set": 544,
+  "sys_evf_clear": 545,
+  "sys_evf_cancel": 546,
+  "sys_query_memory_protection": 547,
+  "sys_batch_map": 548,
+  "sys_osem_create": 549,
+  "sys_osem_delete": 550,
+  "sys_osem_open": 551,
+  "sys_osem_close": 552,
+  "sys_osem_wait": 553,
+  "sys_osem_trywait": 554,
+  "sys_osem_post": 555,
+  "sys_osem_cancel": 556,
+  "sys_namedobj_create": 557,
+  "sys_namedobj_delete": 558,
+  "sys_set_vm_container": 559,
+  "sys_debug_init": 560,
+  "sys_suspend_process": 561,
+  "sys_resume_process": 562,
+  "sys_opmc_enable": 563,
+  "sys_opmc_disable": 564,
+  "sys_opmc_set_ctl": 565,
+  "sys_opmc_set_ctr": 566,
+  "sys_opmc_get_ctr": 567,
+  "sys_budget_create": 568,
+  "sys_budget_delete": 569,
+  "sys_budget_get": 570,
+  "sys_budget_set": 571,
+  "sys_virtual_query": 572,
+  "sys_mdbg_call": 573,
+  "sys_sblock_create": 574,
+  "sys_sblock_delete": 575,
+  "sys_sblock_enter": 576,
+  "sys_sblock_exit": 577,
+  "sys_sblock_xenter": 578,
+  "sys_sblock_xexit": 579,
+  "sys_eport_create": 580,
+  "sys_eport_delete": 581,
+  "sys_eport_trigger": 582,
+  "sys_eport_open": 583,
+  "sys_eport_close": 584,
+  "sys_is_in_sandbox": 585,
+  "sys_dmem_container": 586,
+  "sys_get_authinfo": 587,
+  "sys_mname": 588,
+  "sys_dynlib_dlopen": 589,
+  "sys_dynlib_dlclose": 590,
+  "sys_dynlib_dlsym": 591,
+  "sys_dynlib_get_list": 592,
+  "sys_dynlib_get_info": 593,
+  "sys_dynlib_load_prx": 594,
+  "sys_dynlib_unload_prx": 595,
+  "sys_dynlib_do_copy_relocations": 596,
+  "sys_dynlib_prepare_dlclose": 597,
+  "sys_dynlib_get_proc_param": 598,
+  "sys_dynlib_process_needed_and_relocate": 599,
+  "sys_sandbox_path": 600,
+  "sys_mdbg_service": 601,
+  "sys_randomized_path": 602,
+  "sys_rdup": 603,
+  "sys_dl_get_metadata": 604,
+  "sys_workaround8849": 605,
+  "sys_is_development_mode": 606,
+  "sys_get_self_auth_info": 607,
+  "sys_dynlib_get_info_ex": 608,
+  "sys_budget_getid": 609,
+  "sys_budget_get_ptype": 610,
+  "sys_get_paging_stats_of_all_threads": 611,
+  "sys_get_proc_type_info": 612,
+  "sys_get_resident_count": 613,
+  "sys_prepare_to_suspend_process": 614,
+  "sys_get_resident_fmem_count": 615,
+  "sys_thr_get_name": 616,
+  "sys_set_gpo": 617,
+  "sys_get_paging_stats_of_all_objects": 618,
+  "sys_test_debug_rwmem": 619,
+  "sys_free_stack": 620,
+  "sys_suspend_system": 621,
+  "sys_ipmimgr_call": 622,
+  "sys_get_gpo": 623,
+  "sys_get_vm_map_timestamp": 624,
+  "sys_opmc_set_hw": 625,
+  "sys_opmc_get_hw": 626,
+  "sys_get_cpu_usage_all": 627,
+  "sys_mmap_dmem": 628,
+  "sys_physhm_open": 629,
+  "sys_physhm_unlink": 630,
+  "sys_resume_internal_hdd": 631,
+  "sys_thr_suspend_ucontext": 632,
+  "sys_thr_resume_ucontext": 633,
+  "sys_thr_get_ucontext": 634,
+  /*"sys_thr_set_ucontext": 635,
+  "sys_set_timezone_info": 636,
+  "sys_set_phys_fmem_limit": 637,
+  "sys_utc_to_localtime": 638,
+  "sys_localtime_to_utc": 639,
+  "sys_set_uevt": 640,
+  "sys_get_cpu_usage_proc": 641,
+  "sys_get_map_statistics": 642,
+  "sys_set_chicken_switches": 643,
+  "sys_extend_page_table_pool": 644,
+  "sys_645": 645,
+  "sys_get_kernel_mem_statistics": 646,
+  "sys_get_sdk_compiled_version": 647,
+  "sys_app_state_change": 648,
+  "sys_dynlib_get_obj_member": 649,
+  "sys_budget_get_ptype_of_budget": 650,
+  "sys_prepare_to_resume_process": 651,
+  "sys_process_terminate": 652,
+  "sys_blockpool_open": 653,
+  "sys_blockpool_map": 654,
+  "sys_blockpool_unmap": 655,
+  "sys_dynlib_get_info_for_libdbg": 656,
+  "sys_blockpool_batch": 657,
+  "sys_fdatasync": 658,
+  "sys_dynlib_get_list2": 659,
+  "sys_dynlib_get_info2": 660,
+  "sys_aio_submit": 661,
+  "sys_aio_multi_delete": 662,
+  "sys_aio_multi_wait": 663,
+  "sys_aio_multi_poll": 664,
+  "sys_aio_get_data": 655,
+  "sys_aio_multi_cancel": 666,
+  "sys_get_bio_usage_all": 667,
+  "sys_aio_create": 668,
+  "sys_aio_submit_cmd": 669,
+  "sys_aio_init": 670,
+  "sys_get_page_table_stats": 671,
+  "sys_dynlib_get_list_for_libdbg": 672*/
+}
+
+
+/* Get syscall name by index */
+function swapkeyval(json) {
+  var ret = {};
+  for (var key in json) {
+    if (json.hasOwnProperty(key))
+      ret[json[key]] = key;
+  }
+  return ret;
+}
+window.nameforsyscall = swapkeyval(window.syscallnames);

@@ -1,96 +1,141 @@
+<!DOCTYPE html>
 <html>
-<!-- <html manifest="cache.appcache"> -->
-
 <head>
-    <title>PS5 UMTX Jailbreak</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="main.css">
+  <title>QuickHEN 3.55-5.07</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .loader {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -75px 0 0 -75px;
+
+      border: 10px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 10px solid #044595;
+      border-left: 10px solid #044595;
+      width: 120px;
+      height: 120px;
+
+      -webkit-animation: spin 1s linear infinite;
+    }
+
+    .info {
+      overflow: hidden;
+      position: fixed;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      font-size: 45px;
+      font-family: sans-serif;
+
+      transform: translate(-50%, -50%);
+    }
+
+    .credits {
+      overflow: hidden;
+      position: fixed;
+      position: absolute;
+      top: 90%;
+      left: 50%;
+
+      font-size: 16px;
+      font-family: sans-serif;
+      text-align: center;
+
+      transform: translate(-50%, -90%);
+    }
+
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+  </style>
 </head>
+<body style="margin:0;">
+  <script>
+	var fwFromUA = navigator.userAgent.substring(navigator.userAgent.indexOf("5.0 (") + 19, navigator.userAgent.indexOf(") Apple"));
+	var fw_major_string = fwFromUA.substring(fwFromUA.indexOf(""), fwFromUA.indexOf("."));
+	var fw_minor_string = fwFromUA.substring(fwFromUA.indexOf(".")+3, fwFromUA.indexOf(fw_major_string)+2);
+	var ps4_fw = parseInt(fw_major_string) * 100 + parseInt(fw_minor_string);
+	window.ps4_fw = ps4_fw;
+	//alert(ps4_fw);
+	if (window.ps4_fw <= 407)
+		window.leakval_slide = 0x28;
+	else
+		window.leakval_slide = 0x10;
 
-<!-- body is set up as three rows: auto 1fr auto -->
-<body>
-    <!-- Row 1 -->
-    <div class="p-2">
-        <h1 class="text-center">PS5 UMTX Jailbreak (1.xx-5.xx)</h1>
-        <p class="text-center" id="top-bar-text">Current firmware: <span class="fw-bold" id="current-fw"></span></p>
+    window.onload = function () {
+		runWebKitExploit();
+    }
+	
+	function runWebKitExploit() {
+		if (ps4_fw <= 407)
+			setTimeout(exploit_StackUnitializedRead, 1);
+		else if (ps4_fw >= 450 && ps4_fw <= 501 && 1==0)
+			setTimeout(exploit_setAttributeNodeNS, 1);
+		else if (ps4_fw >= 450 && ps4_fw <= 555)
+			setTimeout(exploit_haveABadTime, 1);
+    }
+	
+	window.postExpl = function () {
+		setTimeout(window.stage2, 1);
+	}
 
-        <!-- This is absolute positioned to the body-->
-        <div id="toast-container"></div>
-    </div>
+    function allset() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("allset").style.display = "block";
+    }
 
-    <!-- Row 2 -->
-    <div id="main-content">
-        <div id="pre-jb-view" class="d-flex align-items-center justify-content-center flex-direction-column selected">
-            <a tabindex="0" class="btn fw-bold" id="run-jb" onclick="run()">Jailbreak</a>
-            <a tabindex="0" class="btn" style="padding: 0.5rem 2rem; font-size: 1rem;" id="run-wk-only" onclick="run(true)">Webkit-only (sender)</a>
-        </div>
+    function awaitpl() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("awaiting").style.display = "block";
+    }
 
-        <div id="console-view">
-            <textarea id="console" class="log" readonly></textarea>
-        </div>
+    function fail(info) {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("fail").style.display = "block";
+    }
+  </script>
 
-        <div id="payloads-view">
-        </div>
-    </div>
+  <div id="loader" class="loader"></div>
 
-    <!-- Row 3 -->
-    <div class="position-relative text-center p-2 mb-2">
-        <p class="text-secondary" id="version">v1.2</p>
-        <p class="text-secondary">creds & greetz</p>
-        <h3 class="text-secondary mt-2">
-            <a href="https://x.com/fail0verflow">@fail0verflow</a>,
-            <a href="https://twitter.com/flat_z">@flat_z</a>,
-            <a href="https://twitter.com/SpecterDev">@SpecterDev</a>,
-            ChendoChap,
-            SlidyBat,
-            abc/psfree,
-            <br />
-            idlesauce,
-            <a href="https://x.com/znullptr">@znullptr</a>,
-            <a href="https://twitter.com/notnotzecoxao">@notnotzecoxao</a>,
-            <a href="https://twitter.com/SocraticBliss">@SocraticBliss</a>,
-            <a href="https://github.com/john-tornblom">John Tornblom</a>,
-            <a href="https://discord.gg/kbrzGuH3F6">PS5 R&D Discord</a>
-        </h3>
+  <div id="awaiting" class="info" style="display:none;">
+    Awaiting Payload...
+  </div>
 
-        <div class="position-absolute d-flex align-items-center bottom-0 left-0 m-4"> 
-            <div class="l2-redirect-box">L2</div>
-            <span class="ml-2">Redirect</span>
-        </div>
-    </div>
+  <div id="allset" class="info" style="display:none;">
+    You're all set!
+  </div>
 
-    <script src="int64.js"></script>
-    <script src="rop.js"></script>
-    <script src="exploit.js"></script>
-    <script src="custom_host_stuff.js"></script>
-    <script src="module/syscalls.js"></script>
-    <script src="webkit_fontface.js"></script>
-    <script type="module" src="psfree/psfree.mjs"></script>
-    <script src="payload_map.js"></script>
-    
-    <script>
-        addEventListener('unhandledrejection', (event) => {
-            const reason = event.reason;
-            // We log the line and column numbers as well since some exceptions (like
-            // SyntaxError) do not show it in the stack trace.
-            alert(
-                `${reason}\n`
-                + `${reason.sourceURL}:${reason.line}:${reason.column}\n`
-                + `${reason.stack}`
-            );
-            throw reason;
-        });
-        document.getElementById("current-fw").innerHTML = fw_str;
-        localStorage.setItem(LOCALSTORE_WK_EXPLOIT_TYPE_KEY, LOCALSTORE_WK_EXPLOIT_TYPE_VALUE_PSFREE);
-        registerAppCacheEventHandlers();
-        registerL2ButtonHandler();
-        window.onload = function() {
-            let autoload = sessionStorage.getItem(SESSIONSTORE_ON_LOAD_AUTORUN_KEY);
-            if (autoload) {
-                run(autoload == "wkonly", false);
-            }
-        };
-    </script>
+  <div id="fail" class="info" style="display:none;">
+    Something went wrong :(
+  </div>
+
+  <div id="badfw" class="info" style="display:none;">
+    Only firmwares 3.55-5.07 are supported!
+  </div>
+  
+  <div id="footer" class="credits">
+    <ul style="list-style: none;padding-left:0">
+      <li>Exploits from qwertyoruiopz</li>
+      <li>Implementation by Specter and CelesteBlue</li>
+      <li>HEN thanks to flatz, idc, WildCard, zecoxao, xvortex, hitodama, BigBoss, kozarovv, Zer0xFF</li>
+    </ul>
+  </div>
+  
+  <script src="./common_utils.js"></script>
+  <script src="./rop.js"></script>
+  <script src="./syscalls.js"></script>
+  <script src="./kernel_namedobj.js"></script>
+  <script src="./kernel_bpf_race_old.js"></script>
+  <script src="./kernel_bpf_race.js"></script>
+  <script src="./kernel_bpf_double_free.js"></script>
+  <script src="./userland.js"></script>
+  <script src="./exploit_StackUnitializedRead.js"></script>
+  <script src="./exploit_setAttributeNodeNS.js"></script>
+  <script src="./exploit_haveABadTime.js"></script>
+  <pre id="console"></pre>
 </body>
-
 </html>
